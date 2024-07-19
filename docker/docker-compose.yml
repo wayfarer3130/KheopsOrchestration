@@ -5,7 +5,7 @@ services:
 # refer to the Keycloak documentation for instruction on how to properly
 # secure Keycloak.
   keycloak:
-    image: jboss/keycloak:16.1.1
+    image: quay.io/keycloak/keycloak:16.1.1
     container_name: keycloak
     command: ["-b", "0.0.0.0"]
     ports:
@@ -14,6 +14,7 @@ services:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD_FILE: /run/secrets/keycloak_admin_password
       KEYCLOAK_IMPORT: /tmp/kheops-realm.json
+      DB_VENDOR: h2
 # In this configuration, users of the Web UI will access KHEOPS and be
 # redirected to Keycloak using the frontend URL 
       KEYCLOAK_FRONTEND_URL: http://127.0.0.1:8080/auth
