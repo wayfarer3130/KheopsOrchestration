@@ -1,9 +1,11 @@
 ---
+name: kheops
+
 services:
-# In a production environment, Keycloak should be set up separately from KHEOPS.
-# KHEOPS interacts with Keycloak using the Authorization Code flow please
-# refer to the Keycloak documentation for instruction on how to properly
-# secure Keycloak.
+  # In a production environment, Keycloak should be set up separately from KHEOPS.
+  # KHEOPS interacts with Keycloak using the Authorization Code flow please
+  # refer to the Keycloak documentation for instruction on how to properly
+  # secure Keycloak.
   keycloak:
     image: jboss/keycloak:16.1.1
     container_name: keycloak
@@ -14,8 +16,8 @@ services:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD_FILE: /run/secrets/keycloak_admin_password
       KEYCLOAK_IMPORT: /tmp/kheops-realm.json
-# In this configuration, users of the Web UI will access KHEOPS and be
-# redirected to Keycloak using the frontend URL 
+      # In this configuration, users of the Web UI will access KHEOPS and be
+      # redirected to Keycloak using the frontend URL
       KEYCLOAK_FRONTEND_URL: http://127.0.0.1:8080/auth
     volumes:
       - keycloak-standalone-data:/opt/jboss/keycloak/standalone/data
@@ -26,9 +28,9 @@ services:
     networks:
       - keycloak_network
 
-# DCM4CHEE uses the an LDAP server for configuration, as per the DICOM 
-# Application Configuration Management Profile. For this installation
-# we do not apply any custom configuration to DCM4CEE
+  # DCM4CHEE uses the an LDAP server for configuration, as per the DICOM
+  # Application Configuration Management Profile. For this installation
+  # we do not apply any custom configuration to DCM4CEE
   ldap:
     container_name: ldap
     image: dcm4che/slapd-dcm4chee:2.6.0-25.1
@@ -36,7 +38,7 @@ services:
     networks:
       - pacs_network
 
-# DCM4CHEE uses this PostgreSQL database
+  # DCM4CHEE uses this PostgreSQL database
   pacs-postgres:
     container_name: pacspostgres
     image: dcm4che/postgres-dcm4chee:13.5-25
@@ -56,7 +58,7 @@ services:
     networks:
       - pacs_network
 
-# The main DCM4CHEE container
+  # The main DCM4CHEE container
   pacs-arc:
     container_name: pacsarc
     image: dcm4che/dcm4chee-arc-psql:5.25.1
@@ -81,7 +83,7 @@ services:
     networks:
       - pacs_network
 
-# KHEOPS persists all data to this PostgreSQL database
+  # KHEOPS persists all data to this PostgreSQL database
   kheops-postgres:
     container_name: kheopspostgres
     image: postgres:12.9-alpine
@@ -98,7 +100,7 @@ services:
 
   kheops-authorization:
     container_name: kheopsauthorization
-    image: osirixfoundation/kheops-authorization:v1.1.1
+    image: osirixfoundation/kheops-authorization:v1.1.2
     logging:
       driver: json-file
       options:
@@ -125,7 +127,7 @@ services:
 
   kheops-authorization-metricbeat:
     container_name: kheopsauthorizationmetricbeat
-    image: osirixfoundation/kheops-authorization-metricbeat:v1.1.1
+    image: osirixfoundation/kheops-authorization-metricbeat:v1.1.2
     env_file: docker-compose.env
     environment:
       - KHEOPS_INSTANCES=kheops
@@ -137,7 +139,7 @@ services:
 
   kheops-filebeat-sidecar:
     container_name: kheopsfilebeatsidecar
-    image: osirixfoundation/kheops-filebeat-sidecar:v1.1.1
+    image: osirixfoundation/kheops-filebeat-sidecar:v1.1.2
     environment:
       - KHEOPS_INSTANCES=kheops
       - KHEOPS_LOGSTASH_URL=logstash:5044
@@ -156,7 +158,7 @@ services:
 
   kheops-zipper:
     container_name: kheopszipper
-    image: osirixfoundation/kheops-zipper:v1.1.1
+    image: osirixfoundation/kheops-zipper:v1.1.2
     logging:
       driver: json-file
       options:
@@ -170,14 +172,14 @@ services:
 
   kheops-ui:
     container_name: kheopsui
-    image: osirixfoundation/kheops-ui:v1.1.1
+    image: osirixfoundation/kheops-ui:v1.1.2
     env_file: docker-compose.env
     networks:
       - frontend_network
 
   kheops-dicomweb-proxy:
     container_name: kheopsdicomwebproxy
-    image: osirixfoundation/kheops-dicomweb-proxy:v1.1.1
+    image: osirixfoundation/kheops-dicomweb-proxy:v1.1.2
     logging:
       driver: json-file
       options:
@@ -191,7 +193,7 @@ services:
       - kheops_network
 
   kheops-reverse-proxy:
-    image: osirixfoundation/kheops-reverse-proxy:v1.1.1-insecure
+    image: osirixfoundation/kheops-reverse-proxy:v1.1.2-insecure
     container_name: kheopsreverseproxy
     env_file: docker-compose.env
     volumes:
@@ -215,7 +217,7 @@ services:
   pacs-authorization-proxy:
     container_name: pacsauthorizationproxy
     env_file: docker-compose.env
-    image: osirixfoundation/pacs-authorization-proxy:v1.1.1
+    image: osirixfoundation/pacs-authorization-proxy:v1.1.2
     volumes:
       - logs_pep:/var/log/nginx
     logging:
@@ -232,9 +234,9 @@ services:
       - pacs_network
       - kheops_network
 
-#####################################################################
-####   ELK                                                        ###
-#####################################################################
+  #####################################################################
+  ####   ELK                                                        ###
+  #####################################################################
 
   kibana:
     image: osirixfoundation/kheops-kibana:v17.0.0
@@ -248,7 +250,7 @@ services:
     image: osirixfoundation/kheops-logstash:v17.0.0
     container_name: logstash
     environment:
-      - LS_JAVA_OPTS=-Xmx3g        
+      - LS_JAVA_OPTS=-Xmx3g
     networks:
       - elk_network
       - beats_network
@@ -295,7 +297,6 @@ secrets:
   kheops_auth_admin_password:
     file: secrets/kheops_auth_admin_password
 
-
 volumes:
   keycloak-standalone-data:
   dcm4chee-db-data:
@@ -309,24 +310,24 @@ volumes:
   filebeat_registry:
 
 networks:
-# Network used for communication between the backend KHEOPS components
+  # Network used for communication between the backend KHEOPS components
   kheops_network:
     driver: bridge
-# The PACS network isolates the PACS from the reset of KHEOPS ensuring that
-# all communication between KHEOPS and the PACS goes the the authorization
-# proxy.
+  # The PACS network isolates the PACS from the reset of KHEOPS ensuring that
+  # all communication between KHEOPS and the PACS goes the the authorization
+  # proxy.
   pacs_network:
     driver: bridge
-# Network reserved for communication with the frontend UI.
+  # Network reserved for communication with the frontend UI.
   frontend_network:
     driver: bridge
-# Network for the backend communication between the KHEOPS Authorization
-# Server and Keycloak.
+  # Network for the backend communication between the KHEOPS Authorization
+  # Server and Keycloak.
   keycloak_network:
     driver: bridge
-# Network for elastic stack (logstash-elasticsearch-kibana)
+  # Network for elastic stack (logstash-elasticsearch-kibana)
   elk_network:
     driver: bridge
-# Network for beats (filebeat and metricbeat)
+  # Network for beats (filebeat and metricbeat)
   beats_network:
     driver: bridge
