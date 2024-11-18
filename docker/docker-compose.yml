@@ -7,7 +7,7 @@ services:
   # refer to the Keycloak documentation for instruction on how to properly
   # secure Keycloak.
   keycloak:
-    image: jboss/keycloak:16.1.1
+    image: quay.io/keycloak/keycloak:16.1.1
     container_name: keycloak
     command: ["-b", "0.0.0.0"]
     ports:
@@ -125,36 +125,36 @@ services:
       - keycloak_network
       - beats_network
 
-  kheops-authorization-metricbeat:
-    container_name: kheopsauthorizationmetricbeat
-    image: osirixfoundation/kheops-authorization-metricbeat:v1.1.2
-    env_file: docker-compose.env
-    environment:
-      - KHEOPS_INSTANCES=kheops
-      - KHEOPS_LOGSTASH_URL=logstash:5044
-    depends_on:
-      - kheops-authorization
-    networks:
-      - beats_network
+  # kheops-authorization-metricbeat:
+  #   container_name: kheopsauthorizationmetricbeat
+  #   image: osirixfoundation/kheops-authorization-metricbeat:v1.1.2
+  #   env_file: docker-compose.env
+  #   environment:
+  #     - KHEOPS_INSTANCES=kheops
+  #     - KHEOPS_LOGSTASH_URL=logstash:5044
+  #   depends_on:
+  #     - kheops-authorization
+  #   networks:
+  #     - beats_network
 
-  kheops-filebeat-sidecar:
-    container_name: kheopsfilebeatsidecar
-    image: osirixfoundation/kheops-filebeat-sidecar:v1.1.2
-    environment:
-      - KHEOPS_INSTANCES=kheops
-      - KHEOPS_LOGSTASH_URL=logstash:5044
-    env_file: docker-compose.env
-    depends_on:
-      - kheops-authorization
-      - kheops-reverse-proxy
-      - pacs-authorization-proxy
-    volumes:
-      - logs_auth:/kheops/authorization/logs
-      - logs_pep:/kheops/pep/logs
-      - logs_reverse_proxy:/kheops/reverseproxy/logs
-      - filebeat_registry:/registry
-    networks:
-      - beats_network
+  # kheops-filebeat-sidecar:
+  #   container_name: kheopsfilebeatsidecar
+  #   image: osirixfoundation/kheops-filebeat-sidecar:v1.1.2
+  #   environment:
+  #     - KHEOPS_INSTANCES=kheops
+  #     - KHEOPS_LOGSTASH_URL=logstash:5044
+  #   env_file: docker-compose.env
+  #   depends_on:
+  #     - kheops-authorization
+  #     - kheops-reverse-proxy
+  #     - pacs-authorization-proxy
+  #   volumes:
+  #     - logs_auth:/kheops/authorization/logs
+  #     - logs_pep:/kheops/pep/logs
+  #     - logs_reverse_proxy:/kheops/reverseproxy/logs
+  #     - filebeat_registry:/registry
+  #   networks:
+  #     - beats_network
 
   kheops-zipper:
     container_name: kheopszipper
@@ -238,42 +238,42 @@ services:
   ####   ELK                                                        ###
   #####################################################################
 
-  kibana:
-    image: osirixfoundation/kheops-kibana:v17.0.0
-    container_name: kibana
-    networks:
-      - elk_network
-    ports:
-      - 8081:5601
+  # kibana:
+  #   image: osirixfoundation/kheops-kibana:v17.0.0
+  #   container_name: kibana
+  #   networks:
+  #     - elk_network
+  #   ports:
+  #     - 8081:5601
 
-  logstash:
-    image: osirixfoundation/kheops-logstash:v17.0.0
-    container_name: logstash
-    environment:
-      - LS_JAVA_OPTS=-Xmx3g
-    networks:
-      - elk_network
-      - beats_network
+  # logstash:
+  #   image: osirixfoundation/kheops-logstash:v17.0.0
+  #   container_name: logstash
+  #   environment:
+  #     - LS_JAVA_OPTS=-Xmx3g
+  #   networks:
+  #     - elk_network
+  #     - beats_network
 
-  elasticsearch:
-    image: osirixfoundation/kheops-elasticsearch:v17.0.0
-    container_name: elasticsearch
-    environment:
-      - discovery.type=single-node
-    volumes:
-      - elastic_data:/usr/share/elasticsearch/data
-    networks:
-      - elk_network
-    deploy:
-      resources:
-        limits:
-          memory: 2gb
+  # elasticsearch:
+  #   image: osirixfoundation/kheops-elasticsearch:v17.0.0
+  #   container_name: elasticsearch
+  #   environment:
+  #     - discovery.type=single-node
+  #   volumes:
+  #     - elastic_data:/usr/share/elasticsearch/data
+  #   networks:
+  #     - elk_network
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         memory: 2gb
 
-  kibana-initialize:
-    image: osirixfoundation/kibana-initialize:main
-    container_name: kibanainitialize
-    networks:
-      - elk_network
+  # kibana-initialize:
+  #   image: osirixfoundation/kibana-initialize:main
+  #   container_name: kibanainitialize
+  #   networks:
+  #     - elk_network
 
 #####################################################################
 ####   Secret, volumes & Networks                                 ###
