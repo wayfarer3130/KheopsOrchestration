@@ -29,25 +29,52 @@ do
   read KEYCLOAK_ADMIN_PASSWORD
 done
 
-echo "Downloading resources"
-if [ ! -d "$kheopspath" ]
+if [ ! -d "docker" ]
 then
-  mkdir $kheopspath
-  curl $downloadURI/docker/docker-compose.env --output $kheopspath/docker-compose.env --silent
-  curl $downloadURI/docker/docker-compose.yml --output $kheopspath/docker-compose.yml --silent
-fi
 
-if [ ! -d "$themespath" ]
-then
-  mkdir $themespath
-  curl $downloadURI/themes/kheops.tar.gz --silent | tar -xzC $themespath
-fi
+  echo "Downloading resources"
+  if [ ! -d "$kheopspath" ]
+  then
+    mkdir $kheopspath
+    curl $downloadURI/docker/docker-compose.env --output $kheopspath/docker-compose.env --silent
+    curl $downloadURI/docker/docker-compose.yml --output $kheopspath/docker-compose.yml --silent
+  fi
 
-echo "Downloading realm"
-if [[ ! -d "$realmpath" ]]
-then
-  mkdir $realmpath
-  curl -sL "$downloadURI/realm/kheops-realm.json" > "$realmpath/kheops-realm.json"
+  if [ ! -d "$themespath" ]
+  then
+    mkdir $themespath
+    curl $downloadURI/themes/kheops.tar.gz --silent | tar -xzC $themespath
+  fi
+
+  if [[ ! -d "$realmpath" ]]
+  then
+    echo "Downloading realm"
+    mkdir $realmpath
+    curl -sL "$downloadURI/realm/kheops-realm.json" > "$realmpath/kheops-realm.json"
+  fi
+
+else
+
+  echo "Copying resources"
+  if [ ! -d "$kheopspath" ]
+  then
+    mkdir $kheopspath
+    cp ./docker/* $kheopspath
+  fi
+
+  if [ ! -d "$themespath" ]
+  then
+    mkdir $themespath
+    cat ./themes/kheops.tar.gz | tar -xzC $themespath
+  fi
+
+  if [[ ! -d "$realmpath" ]]
+  then
+    echo "Copying realm"
+    mkdir $realmpath
+    cp ./realm/kheops-realm.json "$realmpath/kheops-realm.json"
+  fi
+
 fi
 
 echo "Generating secrets"

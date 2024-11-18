@@ -234,46 +234,46 @@ services:
       - pacs_network
       - kheops_network
 
-  #####################################################################
-  ####   ELK                                                        ###
-  #####################################################################
+#####################################################################
+####   ELK                                                        ###
+#####################################################################
 
-  # kibana:
-  #   image: osirixfoundation/kheops-kibana:v17.0.0
-  #   container_name: kibana
-  #   networks:
-  #     - elk_network
-  #   ports:
-  #     - 8081:5601
+# kibana:
+#   image: osirixfoundation/kheops-kibana:v17.0.0
+#   container_name: kibana
+#   networks:
+#     - elk_network
+#   ports:
+#     - 8081:5601
 
-  # logstash:
-  #   image: osirixfoundation/kheops-logstash:v17.0.0
-  #   container_name: logstash
-  #   environment:
-  #     - LS_JAVA_OPTS=-Xmx3g
-  #   networks:
-  #     - elk_network
-  #     - beats_network
+# logstash:
+#   image: osirixfoundation/kheops-logstash:v17.0.0
+#   container_name: logstash
+#   environment:
+#     - LS_JAVA_OPTS=-Xmx3g
+#   networks:
+#     - elk_network
+#     - beats_network
 
-  # elasticsearch:
-  #   image: osirixfoundation/kheops-elasticsearch:v17.0.0
-  #   container_name: elasticsearch
-  #   environment:
-  #     - discovery.type=single-node
-  #   volumes:
-  #     - elastic_data:/usr/share/elasticsearch/data
-  #   networks:
-  #     - elk_network
-  #   deploy:
-  #     resources:
-  #       limits:
-  #         memory: 2gb
+# elasticsearch:
+#   image: osirixfoundation/kheops-elasticsearch:v17.0.0
+#   container_name: elasticsearch
+#   environment:
+#     - discovery.type=single-node
+#   volumes:
+#     - elastic_data:/usr/share/elasticsearch/data
+#   networks:
+#     - elk_network
+#   deploy:
+#     resources:
+#       limits:
+#         memory: 2gb
 
-  # kibana-initialize:
-  #   image: osirixfoundation/kibana-initialize:main
-  #   container_name: kibanainitialize
-  #   networks:
-  #     - elk_network
+# kibana-initialize:
+#   image: osirixfoundation/kibana-initialize:main
+#   container_name: kibanainitialize
+#   networks:
+#     - elk_network
 
 #####################################################################
 ####   Secret, volumes & Networks                                 ###
